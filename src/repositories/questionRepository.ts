@@ -7,8 +7,25 @@ export async function findAllQuestions() {
 }
   
 export async function findByQuestionId(questionId: number) {
-    const result = await prisma.questions.findUnique({ where: { id: questionId } });
+    const result = await prisma.questions.findUnique({
+        where:{
+            id: questionId
+        },
+        select: {
+            askedBy: true,
+            question: true,
+            Answers : {
+                select: {
+                    answeredBy: true,
+                    answer: true
+                },
+            },
+        },
+    });
+
     return result;
 }
   
-
+export async function insertQuestion( question: QuestionData ) {
+    await prisma.questions.create({ data: question });
+}
